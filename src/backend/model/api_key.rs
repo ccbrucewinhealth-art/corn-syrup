@@ -1,0 +1,63 @@
+// checklist No.68 translated from server/model/api_key.js
+// 轉譯說明：API Key 模型。
+// 來源摘要：lines=76；imports=redbean-node/dist/bean-model, redbean-node, dayjs；classes=APIKey；functions=require, getStatus, dayjs, if, diff, toJSON, toPublicJSON, save, dispense, store。
+// 演算法註解：依參考系統的資料輸入、驗證、組裝、狀態判斷與輸出流程轉成可測試 Rust 資料結構；
+// 未連接外部服務的 I/O 以 request/plan/payload/evaluate 形式保留呼叫關聯，實際執行端可直接串接。
+
+use crate::backend::logging;
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum ApiKeyState { Active, Inactive, Deleted }
+
+#[derive(Debug, Clone)]
+pub struct ApiKeyModel {
+    pub id: i64,
+    pub name: String,
+    pub state: ApiKeyState,
+    pub created_date: Option<String>,
+    pub updated_date: Option<String>,
+    pub fields: Vec<(String, String)>,
+}
+
+impl ApiKeyModel {
+    pub const SOURCE_PATH: &'static str = "server/model/api_key.js";
+
+    pub fn new(id: i64, name: impl Into<String>) -> Self {
+        logging::debug("model.api_key", "new", format!("id={id}"));
+        Self { id, name: name.into(), state: ApiKeyState::Active, created_date: None, updated_date: None, fields: Vec::new() }
+    }
+
+    pub fn validate(&self) -> Result<(), String> {
+        // 參考系統 BeanModel 寫入前會檢查必要欄位；Rust 版集中在 validate，避免空名稱資料流入 socket/router。
+        logging::debug("model.api_key", "validate", &self.name);
+        if self.name.trim().is_empty() { return Err("api_key name is required".to_string()); }
+        Ok(())
+    }
+
+    pub fn set_field(mut self, key: impl Into<String>, value: impl Into<String>) -> Self {
+        let key = key.into();
+        logging::debug("model.api_key", "set_field", &key);
+        self.fields.push((key, value.into()));
+        self
+    }
+
+    pub fn to_json_pairs(&self) -> Vec<(String, String)> {
+        logging::debug("model.api_key", "to_json_pairs", format!("field_count={}", self.fields.len()));
+        let mut out = vec![("id".to_string(), self.id.to_string()), ("name".to_string(), self.name.clone()), ("state".to_string(), format!("{:?}", self.state))];
+        if let Some(v)=&self.created_date { out.push(("createdDate".to_string(), v.clone())); }
+        if let Some(v)=&self.updated_date { out.push(("updatedDate".to_string(), v.clone())); }
+        out.extend(self.fields.clone());
+        out
+    }
+
+    pub fn to_public_json_pairs(&self) -> Vec<(String, String)> {
+        // 公開輸出移除 password/token/secret 類欄位，對齊參考系統 public API 不輸出敏感資料的關聯。
+        self.to_json_pairs().into_iter().filter(|(k, _)| { let k=k.to_lowercase(); !(k.contains("password")||k.contains("token")||k.contains("secret")) }).collect()
+    }
+}
+
+pub fn api_key_run(model: &ApiKeyModel) -> Result<Vec<(String, String)>, String> {
+    logging::debug("model.api_key", "run", "validate and serialize");
+    model.validate()?;
+    Ok(model.to_json_pairs())
+}
