@@ -6,10 +6,10 @@
     - 目錄
         - 工作目錄: .
         - 程式碼目錄: src
-        - 共用程式庫目錄: lib
-        - 共用套件目錄: package
+        - 共用程式庫目錄: lib/rust
+        - 共用套件目錄: package/rust
         - 執行檔目錄: .
-        - 功能規格目錄: 20.doc/48.spec
+        - 功能規格目錄: 20.doc/48.spec/backend
         - 提示詞目錄： 20.doc/87.ai/60.prompt
 
     - 環境參數檔: .env, 預設使用 {程式碼目錄} 上層 (..) 目錄下的 .env 檔, 如找不到上層，才取用目前目錄下的 .env
@@ -22,7 +22,7 @@
             - Database: TRC_RData
             - User: TRC201
             - Password: syscom#1
-    - 參考系統 : /home/ccbruce/public/github/uptime-kuma
+    - 參考系統 : /home/ccbruce/public/github/uptime-kuma/server
     - check list : 20.doc/48.spec/80.checklist/80.translate_check-list.md
 
 以下目錄不加入分析與考量
