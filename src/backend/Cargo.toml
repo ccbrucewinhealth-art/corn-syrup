@@ -2,10 +2,20 @@
 name = "corn-syrup-backend"
 version = "0.1.0"
 edition = "2021"
-description = "Rust backend package for the corn-syrup-backend project."
+description = "Rust backend package for the corn-syrup Uptime Kuma compatible backend."
+license = "MIT"
+publish = false
+rust-version = "1.75"
+
+[lib]
+name = "corn_syrup_backend"
+path = "lib.rs"
 
 [[bin]]
 name = "corn-syrup"
 path = "main.rs"
 
 [dependencies]
+
+[features]
+default = []

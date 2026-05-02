@@ -95,37 +95,37 @@ pub fn load_dotenv_from(code_dir: impl AsRef<Path>) -> Vec<(String, String)> {
 pub fn load_config(args: &[String], env: &[(String, String)]) -> Result<AppConfig, String> {
     logging::debug("auto.config", "load_config", "enter");
     let args_map = parse_args(args);
-    let mut env = env_map(&load_dotenv_from("src"));
-    env.extend(env_map(env));
+    let mut merged_env = env_map(&load_dotenv_from("src"));
+    merged_env.extend(env_map(env));
 
     let hostname = args_map
         .get("host")
         .cloned()
-        .or_else(|| env.get("UPTIME_KUMA_HOST").cloned())
-        .or_else(|| env.get("HOST").cloned());
+        .or_else(|| merged_env.get("UPTIME_KUMA_HOST").cloned())
+        .or_else(|| merged_env.get("HOST").cloned());
 
     let port = args_map
         .get("port")
-        .or_else(|| env.get("UPTIME_KUMA_PORT"))
-        .or_else(|| env.get("PORT"))
+        .or_else(|| merged_env.get("UPTIME_KUMA_PORT"))
+        .or_else(|| merged_env.get("PORT"))
         .and_then(|v| v.parse::<u16>().ok())
         .unwrap_or(3001);
 
     let ssl_key = args_map
         .get("ssl-key")
         .cloned()
-        .or_else(|| env.get("UPTIME_KUMA_SSL_KEY").cloned())
-        .or_else(|| env.get("SSL_KEY").cloned());
+        .or_else(|| merged_env.get("UPTIME_KUMA_SSL_KEY").cloned())
+        .or_else(|| merged_env.get("SSL_KEY").cloned());
     let ssl_cert = args_map
         .get("ssl-cert")
         .cloned()
-        .or_else(|| env.get("UPTIME_KUMA_SSL_CERT").cloned())
-        .or_else(|| env.get("SSL_CERT").cloned());
+        .or_else(|| merged_env.get("UPTIME_KUMA_SSL_CERT").cloned())
+        .or_else(|| merged_env.get("SSL_CERT").cloned());
     let ssl_key_passphrase = args_map
         .get("ssl-key-passphrase")
         .cloned()
-        .or_else(|| env.get("UPTIME_KUMA_SSL_KEY_PASSPHRASE").cloned())
-        .or_else(|| env.get("SSL_KEY_PASSPHRASE").cloned());
+        .or_else(|| merged_env.get("UPTIME_KUMA_SSL_KEY_PASSPHRASE").cloned())
+        .or_else(|| merged_env.get("SSL_KEY_PASSPHRASE").cloned());
     let is_ssl = ssl_key.is_some() && ssl_cert.is_some();
 
     // getLocalWebSocketURL() 對齊 config.js：SSL 決定 wss/ws，hostname 空值改 localhost。
@@ -136,24 +136,24 @@ pub fn load_config(args: &[String], env: &[(String, String)]) -> Result<AppConfi
     let demo_mode = parse_bool_flag(args_map.get("demo"));
     let data_dir = args_map
         .get("data-dir")
-        .or_else(|| env.get("DATA_DIR"))
+        .or_else(|| merged_env.get("DATA_DIR"))
         .map(PathBuf::from)
         .unwrap_or_else(|| PathBuf::from("./data"));
 
-    let node_env = env
+    let node_env = merged_env
         .get("NODE_ENV")
         .cloned()
         .unwrap_or_else(|| "production".to_string());
-    let ws_origin_check = env
+    let ws_origin_check = merged_env
         .get("UPTIME_KUMA_WS_ORIGIN_CHECK")
         .cloned()
         .unwrap_or_else(|| "cors-like".to_string());
     let cloudflared_token = args_map
         .get("cloudflared-token")
         .cloned()
-        .or_else(|| env.get("UPTIME_KUMA_CLOUDFLARED_TOKEN").cloned());
+        .or_else(|| merged_env.get("UPTIME_KUMA_CLOUDFLARED_TOKEN").cloned());
     let disable_frame_same_origin =
-        parse_bool_flag(env.get("UPTIME_KUMA_DISABLE_FRAME_SAMEORIGIN"))
+        parse_bool_flag(merged_env.get("UPTIME_KUMA_DISABLE_FRAME_SAMEORIGIN"))
             || parse_bool_flag(args_map.get("disable-frame-sameorigin"));
     let test_mode = parse_bool_flag(args_map.get("test"));
 

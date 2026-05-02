@@ -1,3 +1,32 @@
+## 2026-05-02 09:47:39 +0800
+
+- 分析 `src/backend` 模組架構與現有 Rust 外部套件引用，確認目前 backend 主要使用標準函式庫與內部模組。
+- 更新 `src/backend/Cargo.toml`：補上 package metadata、library target、binary target 與 features 區段。
+- 新增 `src/backend/lib.rs` 作為 library root，維持既有 `crate::backend::*` 模組路徑相容。
+- 修正 `src/backend/backend.rs` 的 `util` 模組路徑，改載入既有 `src/backend/util.rs` 功能實作。
+- 修正 `src/backend/auth/mod.rs` 子模組宣告，讓 password/totp 模組可被正確編譯。
+- 修正 `src/backend/config.rs` 環境變數合併變數命名與型別衝突。
+- 已執行 `cargo check --manifest-path src/backend/Cargo.toml`，編譯檢查成功；目前僅保留 dead code 警告。
+
+
+## 2026-05-02 09:36:36 +0800
+
+- 檢查 React frontend log library，新增 `loglevel` 與 `src/frontend/src/lib/logger.ts`。
+- 補強產出檢查表前 50 個未完成項目：App、靜態資產標記、共用元件與 `360messenger` notification provider React 可執行轉譯。
+- 補上 route table/fallback、i18n 繁中/英文/日文 fallback、Service Worker install/activate/fetch/cache 行為。
+- 更新 `20.doc/48.spec/frontend/80.checklist/80.translate_check-list.md` Current-status 與完成勾選。
+- 新增處理紀錄 `20.doc/15.resumes/Resume20260502-093636.md`。
+- 已執行 `npm install` 與 `npm run build`，React frontend 建置成功。
+
+
+## 2026-05-02 09:03:43 +0800
+
+- 建立 React frontend 前置轉換文件與 5 階段需求/規格/計畫/工作文件。
+- 產出 `20.doc/48.spec/frontend/50.Framework.md` 與 `20.doc/48.spec/frontend/80.checklist/80.translate_check-list.md`。
+- 新增 `src/frontend/` React/Vite/TypeScript 基礎專案與一對一 Vue 來源骨架。
+- 新增 frontend 工作 shell、`src/frontend/Makefile` 與 `package/modules/download_all_package-cron.sh`。
+- 新增處理紀錄 `20.doc/15.resumes/Resume20260502-090343.md`。
+
 
 ## 2026-05-01 23:10:50 +0800
 

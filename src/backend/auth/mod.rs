@@ -1,6 +1,8 @@
-use crate::backend::auth::password;
 use crate::backend::util::decode_jwt_payload_unverified;
 use crate::backend::logging;
+
+pub mod password;
+pub mod totp;
 
 #[derive(Debug, Clone)]
 pub struct UserCredential {

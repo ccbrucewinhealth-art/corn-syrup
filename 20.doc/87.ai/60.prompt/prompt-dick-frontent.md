@@ -23,7 +23,7 @@
             - User: TRC201
             - Password: syscom#1
     - 參考系統 : /home/ccbruce/public/github/uptime-kuma/src
-    - check list : 20.doc/48.spec/frontend/80.checklist/80.translate_check-list.md
+    - 產出檢查表 : 20.doc/48.spec/frontend/80.checklist/80.translate_check-list.md
 
 以下目錄不加入分析與考量
 
@@ -86,12 +86,12 @@
     - 產生一個 makefile
 
 ###
-20.doc/48.spec/frontend/80.checklist/80.translate_check-list.md 中的 check list 內容與 參考系統 內的檔案內容可能不一致，檢查，經我確認後再異動
+ 產出檢查表  內容與 參考系統 內的檔案內容可能不一致，檢查，經我確認後再異動
 ###
-檢查check list 中前端與參考系統內的源碼是否有不一致的地方
- 將不一致的地方，更新至 check list 檔中
+檢查 產出檢查表  中前端與參考系統內的源碼是否有不一致的地方
+ 將不一致的地方，更新至  產出檢查表  檔中
 ##
-check list 中所有 check 標示成 [ ] <--未完成 
+ 產出檢查表  中所有 check 標示成 [ ] <--未完成 
 ##
 以下 所有應執行的動作 (含 python ) , 所有程式 與命令，都 同意執行，且不要再詢問
 
@@ -101,7 +101,7 @@ check list 中所有 check 標示成 [ ] <--未完成
 ## 轉譯
 以下 所有應執行的動作 (含 python ) , 所有程式 與命令，都 同意執行，且不要再詢問
 檢查是否有加入 log library, 沒有，則加入
-進行 check list 中 50 個未完成的程式碼，進行所對應 源碼的 轉譯，
+進行  產出檢查表  中 50 個未完成的程式碼，進行所對應 源碼的 轉譯，
     - 轉譯說明
         - 我不要產出空的待補程式碼，請依 所對應的 程式 碼實際轉譯, 產出實際可執行的程式碼
             - 應完整還原 Vue 元件實際行為
@@ -113,18 +113,18 @@ check list 中所有 check 標示成 [ ] <--未完成
         - 有相關程式碼，也可一併產出
         - 相關動作，加上 log debug 顯示相關動作
         - 應再檢查其程式碼的關聯應與 參考系統 內的呼叫關聯一致
-        - 更新回 check list 中，與 結果記錄在 Current-status 欄位
+        - 更新回  產出檢查表  中，與 結果記錄在 Current-status 欄位
     -如果不需轉換，請從參考與系統中直接複製
 
 ### 轉譯檢查
 
 以下 所有應執行的動作 (含 python ) , 所有程式 與命令，都 同意執行，且不要再詢問
-進行 check list 中 150 個未完成的程式碼，進行結果檢查，
+進行  產出檢查表  中 150 個未完成的程式碼，進行結果檢查，
     - 轉譯說明檢查
         - 源碼 與 在 參考系統 中 所對應的 程式 進行 實作的比對，
             找出不一致 架構 或實作方法 (並列出那些 內容 未實作) 不同的程式清單
         - 如 架構一樣再檢查其程式碼的關聯應與 參考系統 內的呼叫關聯一致 -> [x]
-        - 更新回 check list 中，與 結果記錄在 Current-status 欄位
+        - 更新回  產出檢查表  中，與 結果記錄在 Current-status 欄位
     - 進行需補強、待確認後再補碼 的 程式
     - 如果不需轉換，請從參考與系統中直接複製
 
@@ -132,19 +132,24 @@ check list 中所有 check 標示成 [ ] <--未完成
 進行需補強、待確認後再補碼 的 程式
 
 ##
+依目前系統的架構，更新 AGENTS.md, README.md, README-tw.md
 
 ### 加 log 
 以下 所有應執行的動作 (含 python ) , 所有程式 與命令，都 同意執行，且不要再詢問
 檢查是否有加入 log library, 沒有，則加入
 未完成 [ ] 的程式碼，在相關運作的 method 中, 就流程，檢查或加上 log debug 顯示相關動作
 
+##
+src/frontend 目錄與所對應的 內容不一致，先從 lahout 實做對應起 
 
+###
+依 參考系統 的對應，從 menu 開始檢查，將相關內容連結相對 的功能
 # Code review
 
 以下 所有應執行的動作 (含 python ) , 所有程式 與命令，都 同意執行，且不要再詢問
 
 請你扮演一位資深軟體工程師, 使用以下定義, 
-    針對 check list 中未完成 [ ] 的部份，依 各個 phase, 
+    針對  產出檢查表  中未完成 [ ] 的部份，依 各個 phase, 
     進行 程式碼進行全面性的 Code Review
 
 所有產出，將結果 除說明外，相關細節形成表格，加上 確認[] 欄位, 與其他內容
@@ -329,3 +334,69 @@ check list 中所有 check 標示成 [ ] <--未完成
         1. 先逐個面向分析問題,並列出證據
         2. 綜合所有問題,決定 severity 等級
         3. 只在有明確證據時提升 severity,避免過度評估
+
+ ## 修正相關網頁與連結
+ 依 參考系統 的對應，主系統畫面可參考 20.doc/87.ai/62.ref/screenshot/uptimeKuma/Main01 目錄下的網頁存檔，但應先由目前已產出程式碼先做對應
+ 
+ ## 修正相關網頁與連結-2
+ 依 參考系統 的對應，從 首頁 開始檢查，將 
+   狀態頁 維護 設定 說明
+ 相關內容連結相對 的功能對到對應已產出源碼的元件進行連結與修正        
+
+## 主畫面修正
+依 參考系統 的對應，首面畫面應修正成以下參考 
+
+網頁存檔: 20.doc/87.ai/62.ref/screenshot/uptimeKuma/index.mhtml
+截圖: 20.doc/87.ai/62.ref/screenshot/uptimeKuma/main.png
+右側 profile 下拉截圖: 20.doc/87.ai/62.ref/screenshot/uptimeKuma/profille.png
+
+先以產出程式碼先做對應連結, 後進行修正
+
+
+## 新增監控項目 畫面修正
+依 參考系統 的對應，新增監控項目 應修正成以下參考 
+
+網頁存檔: 20.doc/87.ai/62.ref/screenshot/mhtml/01-01.main-new-monitor.mhtml
+截圖: 20.doc/87.ai/62.ref/screenshot/capture/01-01.main-new-monitor.png
+
+先以產出程式碼先做對應連結, 後進行修正
+
+###
+mhtml目錄: 20.doc/87.ai/62.ref/screenshot/mhtml
+截圖目錄:   20.doc/87.ai/62.ref/screenshot/capture
+前端依 參考系統 的對應，依以下描述 進行修正 
+  - settings/general 
+    - 網頁存檔: {mhtml目錄}/03-00.setup-main.mhtml
+    - 截圖:    {截圖目錄}/03-00.setup-main.png
+  - settings/appearance
+    - 網頁存檔: {mhtml目錄}/03-01.setup-appearance.mhtml
+    - 截圖:    {截圖目錄}/03-01.setup-appearance.png
+  - settings/notifications
+    - 網頁存檔: {mhtml目錄}/03-02.setup-notifications.mhtml
+    - 截圖:    {截圖目錄}/03-02.setup-notifications.png
+  - settings/reverse-proxy
+    - 網頁存檔: {mhtml目錄}/03-03.setup-reverse-proxy.mhtml
+    - 截圖:    {截圖目錄}/03-03.setup-reverse-proxy.png
+  - settings/tags
+    - 網頁存檔: {mhtml目錄}/03-04.setup-tags.mhtml
+    - 截圖:    {截圖目錄}/03-04.setup-tags.png
+  - settings/monitor-history
+    - 網頁存檔: {mhtml目錄}/03-05.setup-monitor-history.mhtml
+    - 截圖:    {截圖目錄}/03-05.setup-monitor-history.png
+  - settings/docker-hosts
+    - 網頁存檔: {mhtml目錄}/03-06.setup-docker-hosts.mhtml
+    - 截圖:    {截圖目錄}/03-06.setup-docker-hosts.png
+  - settings/remote-browsers
+    - 網頁存檔: {mhtml目錄}/03-07.setup-browser.mhtml
+    - 截圖:    {截圖目錄}/03-07.setup-browser.png
+  - settings/security
+    - 網頁存檔: {mhtml目錄}/03-08.setup-security.mhtml
+    - 截圖:    {截圖目錄}/03-08.setup-security.png
+  - settings/api-keys
+    - 網頁存檔: {mhtml目錄}/03-09.setup-api-keys.mhtml
+    - 截圖:    {截圖目錄}/03-09.setup-api-keys.png
+  - settings/proxies
+    - 網頁存檔: {mhtml目錄}/03-10.setup-proxies.mhtml
+    - 截圖:    {截圖目錄}/03-10.setup-proxies.png
+  - settings/about
+    - 網頁存檔: {mhtml目錄}/03-11.setup-about.mhtml

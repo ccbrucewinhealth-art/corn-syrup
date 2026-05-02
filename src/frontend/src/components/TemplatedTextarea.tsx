@@ -1,0 +1,3 @@
+import { debugAction } from '../lib/logger';
+export interface TemplatedTextareaProps { modelValue?: string; template?: string; placeholder?: string; onUpdateModelValue?: (value: string) => void; }
+export default function TemplatedTextarea({ modelValue='', template='{{name}}', placeholder='', onUpdateModelValue }: TemplatedTextareaProps) { return <div data-source="components/TemplatedTextarea.vue"><textarea className="form-control" value={modelValue} placeholder={placeholder} onChange={(e)=>onUpdateModelValue?.(e.target.value)} /><button type="button" className="btn" onClick={()=>{debugAction('TemplatedTextarea','insert.template',{template}); onUpdateModelValue?.(`${modelValue}${template}`);}}>+ {template}</button></div>; }

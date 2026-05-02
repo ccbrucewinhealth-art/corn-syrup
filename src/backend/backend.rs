@@ -61,5 +61,5 @@ pub mod socket;
 #[path = "uptime.rs"]
 pub mod uptime;
 
-#[path = "util/mod.rs"]
+#[path = "util.rs"]
 pub mod util;
