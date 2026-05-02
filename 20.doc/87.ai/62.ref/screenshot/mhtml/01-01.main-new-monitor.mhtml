@@ -8198,7 +8198,7 @@ heck-input" type=3D"checkbox" value=3D""><label data-v-f2320cf3=3D"" class=
 -bust" class=3D"form-check-input" type=3D"checkbox" value=3D""><label data-=
 v-f2320cf3=3D"" class=3D"form-check-label" for=3D"cache-bust"><label data-v=
 -f2320cf3=3D"" class=3D"form-check-label" for=3D"cache-bust">=E6=96=B0=E5=
-=A2=9E <code data-v-f2320cf3=3D"">uptime_kuma_cachebuster</code> =E5=8F=83=
+=A2=9E <code data-v-f2320cf3=3D"">CORN_SYRUP_BACKEND_cachebuster</code> =E5=8F=83=
 =E6=95=B8</label></label><div data-v-f2320cf3=3D"" class=3D"form-text">=E9=
 =9A=A8=E6=A9=9F=E7=94=9F=E6=88=90=E5=8F=83=E6=95=B8=E4=BB=A5=E8=B7=B3=E9=81=
 =8E=E5=BF=AB=E5=8F=96=E3=80=82</div></div><div data-v-f2320cf3=3D"" class=

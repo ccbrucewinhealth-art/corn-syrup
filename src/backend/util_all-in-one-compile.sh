@@ -2,8 +2,8 @@
 
 set -e
 
-PROJECT_NAME="corn-syrup"
-BUILD_DIR=""
+PROJECT_NAME="corn-syrup-backend"
+BUILD_DIR="target/release"
 BINARY_NAME="${PROJECT_NAME}"
 
 echo "=== [${PROJECT_NAME}] All-in-One 編譯中 ==="
@@ -20,8 +20,7 @@ echo "Step 2: 檢查依賴..."
 cargo check
 
 echo "Step 3: 單一檔案編譯..."
-cd src && cargo build --release
-cd ..
+cargo build --release --bin "${BINARY_NAME}"
 
 if [ -f "target/release/${BINARY_NAME}" ]; then
     echo "=== 編譯成功 ==="

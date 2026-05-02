@@ -408,3 +408,8 @@ mhtml目錄: 20.doc/87.ai/62.ref/screenshot/mhtml
 相關架構設定資源與架構源碼，請參考
    /home/ccbruce/public/github/kero
 但內容不是系統內容, 僅使用顯示佈版
+
+#  API linking
+將 系統 前端的 相關 API 串連到 後端 (src/backend) 中，並進行相關確認
+
+## API linking

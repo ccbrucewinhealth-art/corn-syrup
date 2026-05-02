@@ -1,5 +1,7 @@
 use crate::backend::config::{load_config, AppConfig};
 use crate::backend::database::{build_knex_like_config, init_data_dir, DatabaseContext, DatabasePaths, DatabaseRuntime, MigrationPlan};
+use crate::backend::database::orm::{OrmConfig, OrmFramework};
+use crate::backend::rest;
 use crate::backend::settings::{InMemorySettingsStore, SettingsStore};
 use crate::backend::util::{allow_dev_all_origin_headers, init_jwt_secret, setting};
 use std::path::PathBuf;
@@ -33,15 +35,21 @@ pub struct BootstrapResult {
     pub process_title: String,
     pub node_env: String,
     pub ws_origin_check: String,
+    pub orm_framework: String,
+    pub orm_config: Vec<(String, String)>,
     pub database_config: Vec<(String, String)>,
     pub migration_plan: MigrationPlan,
     pub startup_steps: Vec<String>,
 }
 
 fn env_value(env: &[(String, String)], key: &str, default_value: &str) -> String {
-    env.iter()
+    let merged_env = crate::backend::config::merge_env_with_dotenv(".", env);
+    merged_env
+        .get(key)
+        .cloned()
+        .or_else(|| env.iter()
         .find(|(k, _)| k == key)
-        .map(|(_, v)| v.clone())
+        .map(|(_, v)| v.clone()))
         .filter(|v| !v.trim().is_empty())
         .unwrap_or_else(|| default_value.to_string())
 }
@@ -50,7 +58,7 @@ pub fn main_run(ctx: &MainContext) -> Result<BootstrapResult, String> {
     logging::debug("auto.main", "main_run", "enter");
     let config = load_config(&ctx.args, &ctx.env)?;
     let node_env = env_value(&ctx.env, "NODE_ENV", "production");
-    let ws_origin_check = env_value(&ctx.env, "UPTIME_KUMA_WS_ORIGIN_CHECK", "cors-like");
+    let ws_origin_check = env_value(&ctx.env, "CORN_SYRUP_BACKEND_WS_ORIGIN_CHECK", "cors-like");
 
     let db_ctx = DatabaseContext {
         data_dir: config.data_dir.clone(),
@@ -59,6 +67,11 @@ pub fn main_run(ctx: &MainContext) -> Result<BootstrapResult, String> {
     let database_runtime = DatabaseRuntime::sqlite(&db_ctx)?;
     let database_config = build_knex_like_config(&database_runtime);
     let migration_plan = database_runtime.migration_plan();
+    let merged_env = crate::backend::config::merge_env_with_dotenv(".", &ctx.env);
+    let orm_config = OrmConfig::from_env_and_sqlite_path(&merged_env, &database_paths.sqlite_path);
+    let orm_config_pairs = orm_config.as_pairs();
+    logging::debug("auto.main", "orm_framework", OrmFramework::SeaOrm.as_str());
+    logging::debug("auto.main", "orm_database_url", orm_config.redacted_url());
 
     let store = InMemorySettingsStore::default();
     store.set_typed(
@@ -73,7 +86,7 @@ pub fn main_run(ctx: &MainContext) -> Result<BootstrapResult, String> {
     if !config.disable_frame_same_origin {
         middleware_headers.push(("X-Frame-Options".to_string(), "SAMEORIGIN".to_string()));
     }
-    if node_env == "development" {
+    if node_env == "development" || config.args.get("allow-cors").cloned().unwrap_or_default() == "true" {
         middleware_headers.extend(allow_dev_all_origin_headers());
     }
 
@@ -83,6 +96,7 @@ pub fn main_run(ctx: &MainContext) -> Result<BootstrapResult, String> {
         "parse-arguments".to_string(),
         "init-data-dir".to_string(),
         "init-database-runtime".to_string(),
+        "init-sea-orm-config".to_string(),
         "init-settings-cache".to_string(),
         "init-jwt-secret".to_string(),
         "configure-middlewares".to_string(),
@@ -99,14 +113,27 @@ pub fn main_run(ctx: &MainContext) -> Result<BootstrapResult, String> {
         process_title: "uptime-kuma".to_string(),
         node_env,
         ws_origin_check,
+        orm_framework: OrmFramework::SeaOrm.as_str().to_string(),
+        orm_config: orm_config_pairs,
         database_config,
         migration_plan,
         startup_steps,
     })
 }
 
-fn main() {
-    if let Err(err) = main_run(&Default::default()) {
+#[tokio::main]
+async fn main() {
+    logging::init("debug");
+    let ctx = MainContext::default();
+    let result = match main_run(&ctx) {
+        Ok(result) => result,
+        Err(err) => {
+            eprintln!("startup failed: {}", err);
+            std::process::exit(1);
+        }
+    };
+
+    if let Err(err) = rest::serve(result.config.clone()).await {
         eprintln!("startup failed: {}", err);
         std::process::exit(1);
     }

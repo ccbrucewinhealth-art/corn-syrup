@@ -2,7 +2,7 @@
 
 set -e
 
-PROJECT_NAME="corn-syrup"
+PROJECT_NAME="corn-syrup-backend"
 BUILD_DIR="target/release"
 BINARY_NAME="${PROJECT_NAME}"
 

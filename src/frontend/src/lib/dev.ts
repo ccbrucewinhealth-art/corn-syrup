@@ -1,0 +1,1 @@
+export const devMode = import.meta.env.DEV;

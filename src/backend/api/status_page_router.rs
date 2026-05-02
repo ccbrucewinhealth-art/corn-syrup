@@ -7,30 +7,56 @@
 use crate::backend::logging;
 
 #[derive(Debug, Clone)]
-pub struct StatusPageRouterContext { pub name: String, pub input: Vec<(String, String)> }
+pub struct StatusPageRouterContext {
+    pub name: String,
+    pub input: Vec<(String, String)>,
+}
 
 #[derive(Debug, Clone)]
-pub struct StatusPageRouterResult { pub ok: bool, pub message: String, pub output: Vec<(String, String)> }
+pub struct StatusPageRouterResult {
+    pub ok: bool,
+    pub message: String,
+    pub output: Vec<(String, String)>,
+}
 
 impl StatusPageRouterContext {
     pub fn validate(&self) -> Result<(), String> {
         // 參考系統呼叫鏈通常先驗證必要參數，再進行狀態計算或輸出組裝；Rust 版保留相同流程。
         logging::debug("translated.status_page_router", "validate", &self.name);
-        if self.name.trim().is_empty() { return Err("status_page_router name is required".to_string()); }
+        if self.name.trim().is_empty() {
+            return Err("status_page_router name is required".to_string());
+        }
         Ok(())
     }
 
     pub fn execute(&self) -> Result<StatusPageRouterResult, String> {
         self.validate()?;
-        logging::debug("translated.status_page_router", "execute", format!("input_count={}", self.input.len()));
+        logging::debug(
+            "translated.status_page_router",
+            "execute",
+            format!("input_count={}", self.input.len()),
+        );
         let mut output = self.input.clone();
-        output.push(("source".to_string(), "server/routers/status-page-router.js".to_string()));
+        output.push((
+            "source".to_string(),
+            "server/routers/status-page-router.js".to_string(),
+        ));
         output.push(("description".to_string(), "狀態頁面路由".to_string()));
-        Ok(StatusPageRouterResult { ok: true, message: format!("狀態頁面路由 executed"), output })
+        Ok(StatusPageRouterResult {
+            ok: true,
+            message: format!("狀態頁面路由 executed"),
+            output,
+        })
     }
 }
 
-pub fn status_page_router_run(ctx: &StatusPageRouterContext) -> Result<StatusPageRouterResult, String> {
-    logging::debug("translated.status_page_router", "run", "execute translated flow");
+pub fn status_page_router_run(
+    ctx: &StatusPageRouterContext,
+) -> Result<StatusPageRouterResult, String> {
+    logging::debug(
+        "translated.status_page_router",
+        "run",
+        "execute translated flow",
+    );
     ctx.execute()
 }

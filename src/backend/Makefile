@@ -1,22 +1,22 @@
 .PHONY: all build run clean test install check help dev docs
 
-PROJECT_NAME = corn-syrup
+PROJECT_NAME = corn-syrup-backend
 BINARY_NAME = $(PROJECT_NAME)
-SRC_DIR = src
-BUILD_DIR = $(SRC_DIR)/target/release
+SRC_DIR = .
+BUILD_DIR = target/release
 
 all: build
 
 check:
 	@echo "=== 檢查程式碼 ==="
-	cd $(SRC_DIR) && cargo check
+	cargo check
 
 build: $(BUILD_DIR)/$(BINARY_NAME)
 	@echo "=== 編譯完成 ==="
 
 $(BUILD_DIR)/$(BINARY_NAME):
 	@echo "=== 編譯中 ==="
-	cd $(SRC_DIR) && cargo build --release
+	cargo build --release --bin $(BINARY_NAME)
 
 run: build
 	@echo "=== 執行中 ==="
@@ -24,11 +24,11 @@ run: build
 
 dev:
 	@echo "=== 開發模式 ==="
-	cd $(SRC_DIR) && cargo run
+	cargo run --bin $(BINARY_NAME)
 
 test:
 	@echo "=== 測試中 ==="
-	cd $(SRC_DIR) && cargo test
+	cargo test
 
 install: build
 	@echo "=== 安裝 ==="
@@ -36,11 +36,11 @@ install: build
 
 clean:
 	@echo "=== 清理 ==="
-	cd $(SRC_DIR) && cargo clean
+	cargo clean
 
 docs:
 	@echo "=== 產生文件 ==="
-	cd $(SRC_DIR) && cargo doc --no-deps
+	cargo doc --no-deps
 
 help:
 	@echo "可用目標:"

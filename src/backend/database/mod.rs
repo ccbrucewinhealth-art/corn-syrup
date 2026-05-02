@@ -2,11 +2,24 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use crate::backend::logging;
 
+pub mod orm;
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum DatabaseDialect {
     Sqlite,
     MariaDb,
     Mysql,
+}
+
+impl DatabaseDialect {
+    pub fn as_str(&self) -> &'static str {
+        logging::debug("auto.mod", "database_dialect.as_str", "enter");
+        match self {
+            DatabaseDialect::Sqlite => "sqlite",
+            DatabaseDialect::MariaDb => "mariadb",
+            DatabaseDialect::Mysql => "mysql",
+        }
+    }
 }
 
 #[derive(Debug, Clone)]

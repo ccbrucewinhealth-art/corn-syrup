@@ -1,14 +1,32 @@
 import { Outlet, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
+const settingsTitles: Record<string, string> = {
+  'general': 'General',
+  'appearance': 'Appearance',
+  'notifications': 'Notifications',
+  'reverse-proxy': 'Reverse Proxy',
+  'tags': 'Tags',
+  'monitor-history': 'Monitor History',
+  'docker-hosts': 'Docker Hosts',
+  'remote-browsers': 'Remote Browsers',
+  'security': 'Security',
+  'api-keys': 'API Keys',
+  'proxies': 'Proxies',
+  'about': 'About',
+};
+
 export default function Settings() {
   const { t } = useTranslation();
   const location = useLocation();
+  const key = location.pathname.split('/').filter(Boolean).at(-1) || 'general';
+  const title = settingsTitles[key] || 'Settings';
 
   return (
     <section className="settings-page" data-source="pages/Settings.vue">
       <div className="card settings-shell">
         <div className="settings-content">
+          <h2 className="settings-content-header mb-3">{t(title)}</h2>
           <div className="settings-content-body">
             <Outlet />
           </div>

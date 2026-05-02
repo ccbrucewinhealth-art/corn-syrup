@@ -12,10 +12,36 @@ name = "corn_syrup_backend"
 path = "lib.rs"
 
 [[bin]]
-name = "corn-syrup"
+name = "corn-syrup-backend"
 path = "main.rs"
 
 [dependencies]
+axum = "0.7"
+base64ct = "=1.7.3"
+crc = "=3.3.0"
+deranged = "=0.5.5"
+env_logger = "0.11"
+http = "0.2"
+icu_collections = "=2.0.0"
+icu_locale_core = "=2.0.0"
+icu_normalizer = "=2.0.0"
+icu_normalizer_data = "=2.0.0"
+icu_properties = "=2.0.1"
+icu_properties_data = "=2.0.1"
+icu_provider = "=2.0.0"
+log = "0.4"
+sea-orm = { version = "0.12", default-features = false, features = ["macros", "runtime-tokio-rustls", "sqlx-sqlite", "sqlx-mysql", "with-json"] }
+idna_adapter = "=1.2.1"
+indexmap = "=2.12.1"
+home = "=0.5.11"
+tempfile = "=3.26.0"
+time = "=0.3.44"
+time-core = "=0.1.6"
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "net"] }
+tower-http = { version = "0.5", features = ["cors"] }
+writeable = { version = "=0.6.3", features = ["alloc"] }
+zerovec = "=0.11.4"
+zerotrie = "=0.2.0"
 
 [features]
 default = []

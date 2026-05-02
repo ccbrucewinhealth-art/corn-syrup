@@ -49,6 +49,9 @@ pub mod radius;
 #[path = "remote/mod.rs"]
 pub mod remote;
 
+#[path = "rest/mod.rs"]
+pub mod rest;
+
 #[path = "server_core.rs"]
 pub mod server_core;
 

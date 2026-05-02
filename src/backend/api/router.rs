@@ -7,26 +7,46 @@
 use crate::backend::logging;
 
 #[derive(Debug, Clone)]
-pub struct RouterContext { pub name: String, pub input: Vec<(String, String)> }
+pub struct RouterContext {
+    pub name: String,
+    pub input: Vec<(String, String)>,
+}
 
 #[derive(Debug, Clone)]
-pub struct RouterResult { pub ok: bool, pub message: String, pub output: Vec<(String, String)> }
+pub struct RouterResult {
+    pub ok: bool,
+    pub message: String,
+    pub output: Vec<(String, String)>,
+}
 
 impl RouterContext {
     pub fn validate(&self) -> Result<(), String> {
         // 參考系統呼叫鏈通常先驗證必要參數，再進行狀態計算或輸出組裝；Rust 版保留相同流程。
         logging::debug("translated.router", "validate", &self.name);
-        if self.name.trim().is_empty() { return Err("router name is required".to_string()); }
+        if self.name.trim().is_empty() {
+            return Err("router name is required".to_string());
+        }
         Ok(())
     }
 
     pub fn execute(&self) -> Result<RouterResult, String> {
         self.validate()?;
-        logging::debug("translated.router", "execute", format!("input_count={}", self.input.len()));
+        logging::debug(
+            "translated.router",
+            "execute",
+            format!("input_count={}", self.input.len()),
+        );
         let mut output = self.input.clone();
-        output.push(("source".to_string(), "server/routers/api-router.js".to_string()));
+        output.push((
+            "source".to_string(),
+            "server/routers/api-router.js".to_string(),
+        ));
         output.push(("description".to_string(), "API 路由".to_string()));
-        Ok(RouterResult { ok: true, message: format!("API 路由 executed"), output })
+        Ok(RouterResult {
+            ok: true,
+            message: format!("API 路由 executed"),
+            output,
+        })
     }
 }
 

@@ -1,3 +1,100 @@
+## 2026-05-03 02:13:50 +0800
+
+- 增強後端 REST API debug log，所有 `/api` 呼叫會記錄 request start、headers、handler dispatch、response status、response headers 與 request end。
+- API log 會遮罩敏感 header：`authorization`、`cookie`、`set-cookie`、`x-api-key`、`x-auth-token`。
+- 各 API handler 回傳前補上步驟 log，包含資料載入、回應內容準備、JSON body 或 badge 回傳資訊。
+- 新增處理紀錄 `20.doc/15.resumes/Resume20260503-021350.md`。
+- 已執行 `cargo check --manifest-path src/backend/Cargo.toml --bin corn-syrup-backend`，首次修正 `log_api_step` 型別後檢查成功；僅保留既有未使用與 dead code warning。
+
+
+## 2026-05-03 02:04:35 +0800
+
+- 修正後端 REST API CORS 設定，於 `src/backend/rest/mod.rs` 加入 `tower_http::cors::CorsLayer`。
+- 預設允許所有 Origin，以支援前端從 `http://192.168.0.132:3001` 呼叫 `http://localhost:30010/api/monitors` 等 API。
+- 新增 `CORN_SYRUP_BACKEND_CORS_ORIGIN` 設定，可使用 `*` 或逗號分隔 origin 清單。
+- 更新 `.env`、`env.sample` 與自動產生 `.env` 預設內容，加入 `CORN_SYRUP_BACKEND_CORS_ORIGIN=*`。
+- 新增處理紀錄 `20.doc/15.resumes/Resume20260503-020435.md`。
+- 已執行 `cargo check --manifest-path src/backend/Cargo.toml --bin corn-syrup-backend`，檢查成功；僅保留既有未使用與 dead code warning。
+
+
+## 2026-05-03 01:46:40 +0800
+
+- 後端選用 SeaORM 作為 Rust ORM framework，加入 `sea-orm` 依賴並啟用 SQLite/MySQL runtime feature。
+- 暫時 pin `tempfile = 3.26.0`，避免 Cargo 1.82 解析最新版 `tempfile` 間接帶入需要 edition2024 的 `getrandom 0.4.x`。
+- 暫時 pin `idna_adapter = 1.2.1`，避免 Cargo 1.82 解析最新版 `idna_adapter 1.2.2` 的 edition2024 需求。
+- 暫時 pin `indexmap = 2.12.1`，避免 Cargo 1.82 解析最新版 `indexmap 2.14.0` 的 edition2024 需求。
+- 暫時 pin `home = 0.5.11`，避免 Cargo 1.82 解析最新版 `home 0.5.12` 的 edition2024 需求。
+- 暫時 pin `time = 0.3.44` 與 `time-core = 0.1.6`，避免 Cargo 1.82 解析最新版 `time-core 0.1.8` 的 edition2024 需求。
+- 暫時 pin `base64ct = 1.7.3`，避免 Cargo 1.82 解析最新版 `base64ct 1.8.x` 的 edition2024 需求。
+- 暫時 pin `crc`、`deranged`、`icu_*` 與 `zerovec` 相容版本，避免 SeaORM/SQLx 間接依賴拉入 rustc 1.83+ 或 1.86+ 才支援的版本。
+- 暫時 pin `zerotrie = 0.2.0`，避免 rustc 1.82 編譯新版 `zerotrie 0.2.4` 的 const mutable reference 語法失敗。
+- 補上 `writeable` 的 `alloc` feature，修正降版 ICU 依賴在 rustc 1.82 下缺少 `String`/`write_to_string` 的編譯問題。
+- 新增 `src/backend/database/orm.rs`，集中 SeaORM 設定、連線 URL 建構、pool options、敏感資訊遮罩與未來連線入口。
+- 更新 `src/backend/database/mod.rs`，公開 `orm` 模組並補上 `DatabaseDialect::as_str()`。
+- 更新 `src/backend/main.rs`，bootstrap 階段會建立 ORM 設定、輸出目前 ORM framework 與遮罩後的 database URL，並納入啟動步驟與結果資料。
+- 更新 `src/backend/config.rs` 與 `env.sample`，補上 `DATABASE_TYPE`、`DATABASE_PORT` 等 ORM 連線設定。
+- 更新後端規格 `20.doc/48.spec/backend/02.Spec/Spec.md`，記錄 SeaORM 架構選型與 `.env` 設定需求。
+- 新增處理紀錄 `20.doc/15.resumes/Resume20260503-014640.md`。
+- 已執行 `cargo check --manifest-path src/backend/Cargo.toml --bin corn-syrup-backend`，檢查成功；僅保留既有未使用與 dead code warning。
+
+
+## 2026-05-02 17:55:30 +0800
+
+- 修正後端 `.env` 載入位置，改為固定讀取目前工作目錄 `./.env`，不再優先讀取 `src/.env` 或 `src/backend/.env`。
+- 更新 `src/backend/config.rs` 的 dotenv 合併流程參數命名，將設定來源語意改為 env 目錄。
+- 新增處理紀錄 `20.doc/15.resumes/Resume20260502-175530.md`。
+- 已執行 `cargo check --manifest-path src/backend/Cargo.toml --bin corn-syrup-backend`，檢查成功；僅保留既有 dead code warning。
+
+
+## 2026-05-02 17:49:03 +0800
+
+- 新增 `src/backend/config.rs` debug log，解析設定後輸出 listen host 與 port。
+- 新增 `src/backend/rest/mod.rs` debug log，REST server bind 前輸出實際 listen host 與 port。
+- 新增處理紀錄 `20.doc/15.resumes/Resume20260502-174903.md`。
+- 已執行 `cargo check --manifest-path src/backend/Cargo.toml --bin corn-syrup-backend`，檢查成功；僅保留既有 dead code warning。
+
+
+## 2026-05-02 17:47:16 +0800
+
+- 將後端 binary target 由 `corn-syrup` 改為 `corn-syrup-backend`。
+- 修正 `src/backend/Makefile`，使用 `corn-syrup-backend` 作為系統/執行檔名稱，並移除錯誤的 `cd src` 工作目錄假設。
+- 修正 `src/backend/util_compile.sh`、`src/backend/util_all-in-one-compile.sh`、`src/backend/util_corn-syrup.sh`、`src/backend/util_corn-syrup-loop-exec.sh` 的執行檔名稱與編譯流程。
+- 更新 `src/backend/rest/mod.rs` manifest 名稱為 `corn-syrup-backend`。
+- 新增處理紀錄 `20.doc/15.resumes/Resume20260502-174716.md`。
+- 已執行 `cargo check --manifest-path src/backend/Cargo.toml --bin corn-syrup-backend` 與 shell 語法檢查，皆成功；僅保留既有 dead code warning。
+
+
+## 2026-05-02 17:44:08 +0800
+
+- 後端加入 `log` 與 `env_logger` 作為 log framework。
+- 更新 `src/backend/logging.rs`，新增 `logging::init(level)` 並改用標準 log facade 輸出 debug/info/warn。
+- 啟動預設使用 debug log，並由 `.env` 的 `LOG_LEVEL` 或 `RUST_LOG` 覆蓋。
+- `load_dotenv_from` 會以 debug log 顯示實際使用的 `.env` 檔案路徑。
+- 更新 `.env`、`env.sample` 與自動產生 `.env` 預設內容，加入 `LOG_LEVEL=debug`。
+- 新增處理紀錄 `20.doc/15.resumes/Resume20260502-174408.md`。
+- 已執行 `cargo check --manifest-path src/backend/Cargo.toml`，檢查成功；僅保留既有 dead code warning。
+
+
+## 2026-05-02 17:41:22 +0800
+
+- 更新 `src/backend/config.rs`，新增啟動時 `.env` 不存在則自動建立預設 `.env` 的功能。
+- 預設 `.env` 內容包含 host、port 與資料庫連線資訊。
+- 新增處理紀錄 `20.doc/15.resumes/Resume20260502-174122.md`。
+- 已執行 `cargo check --manifest-path src/backend/Cargo.toml`，檢查成功；僅保留既有 dead code warning。
+
+
+## 2026-05-02 17:38:49 +0800
+
+- 盤點參考系統後端 Express REST API，彙整 server、api-router、status-page-router、setup-database 與 simple migration routes。
+- 新增 `20.doc/48.spec/80.checklist/80.translate_check-list.md` API 實做檢查表，包含 Endpoint、Route、來源/目的檔與目前記錄。
+- 後端加入 `axum`/`tokio` REST framework 與 runtime，新增 `src/backend/rest/mod.rs` route table 與 handler。
+- 更新後端啟動流程：讀取專案根目錄 `.env`，並依 `CORN_SYRUP_BACKEND_HOST`/`CORN_SYRUP_BACKEND_PORT` listen。
+- 新增 `.env` 與 `env.sample`，寫入 host/port 與資料庫連線參數。
+- 確認前 10 API 已實作並記錄至 API 實做檢查表。
+- 新增處理紀錄 `20.doc/15.resumes/Resume20260502-173849.md`。
+- 已執行 `cargo check --manifest-path src/backend/Cargo.toml`，檢查成功；僅保留既有 dead code warning。
+
+
 ## 2026-05-02 09:47:39 +0800
 
 - 分析 `src/backend` 模組架構與現有 Rust 外部套件引用，確認目前 backend 主要使用標準函式庫與內部模組。

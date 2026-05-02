@@ -96,6 +96,8 @@
 |------|------|
 | R3.8 | server/database.js SQLite |
 | R3.9 | setup-database.js 初始化 |
+| R3.10 | 後端資料存取層選用 SeaORM 作為 Rust ORM framework，統一 SQLite/MySQL/MariaDB 連線設定與後續 entity/repository 實作入口 |
+| R3.11 | `.env` 支援 `DATABASE_TYPE`、`DATABASE_URL`、`DATABASE_HOST`、`DATABASE_PORT`、`DATABASE_NAME`、`DATABASE_USER`、`DATABASE_PASSWORD` 與 SeaORM pool 設定 |
 
 ---
 
