@@ -400,3 +400,11 @@ mhtml目錄: 20.doc/87.ai/62.ref/screenshot/mhtml
     - 截圖:    {截圖目錄}/03-10.setup-proxies.png
   - settings/about
     - 網頁存檔: {mhtml目錄}/03-11.setup-about.mhtml
+
+###
+前端使用 kero (npm install kero), 並將系統修正架構成 kero 顯示模版, 
+其架構可參考 
+     20.doc/87.ai/62.ref/screenshot/page-structure.png 
+相關架構設定資源與架構源碼，請參考
+   /home/ccbruce/public/github/kero
+但內容不是系統內容, 僅使用顯示佈版
