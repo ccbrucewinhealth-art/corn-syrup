@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { apiClient } from '../../lib/api';
-import SettingsSection from './SettingsSection';
+import SettingsSection, { FieldSpec } from './SettingsSection';
 
 interface GeneralSettings {
   timezone?: string;
@@ -17,29 +16,34 @@ interface GeneralSettings {
 
 export default function General() {
   const { t } = useTranslation();
-  const [settings, setSettings] = useState<GeneralSettings>({});
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    apiClient.getSettings()
-      .then((data) => {
-        if (data && typeof data === 'object') {
-          setSettings(data as GeneralSettings);
-        }
-      })
-      .catch((err) => console.error('Load settings failed:', err))
-      .finally(() => setLoading(false));
-  }, []);
+  const handleLoad = async (): Promise<Record<string, string>> => {
+    const data = await apiClient.getSettings();
+    return data.settings || {};
+  };
 
-  return <SettingsSection source="components/settings/General.vue" title="General" fields={[
-    { label: 'Display Timezone', type: 'select', value: settings.timezone, options: ['Auto: Asia/Taipei', 'UTC', 'Asia/Taipei'] },
-    { label: 'Server Timezone', type: 'select', value: settings.serverTimezone, options: ['(UTC+08:00) Asia/Taipei'] },
-    { label: 'Search Engine Visibility', type: 'radio', value: settings.searchEngineVisibility, options: ['Allow indexing', 'Discourage search engines from indexing site'] },
-    { label: 'Entry Page', type: 'radio', value: settings.entryPage, options: ['Dashboard', 'Status Page - aa', 'Status Page - ff'] },
-    { label: 'Primary Base URL', value: settings.primaryBaseUrl, help: 'Auto Get' },
-    { label: 'Steam API Key', type: 'password', value: settings.steamApiKey, help: 'Steam API Key Help' },
-    { label: 'Globalping API Token', type: 'password', value: settings.globalpingApiToken, help: 'Globalping API Token Help' },
-    { label: 'Enable NSCD', type: 'radio', value: settings.nscdEnabled, options: ['Enable', 'Disable'] },
-    { label: 'Chrome/Chromium Executable', value: settings.chromeExecutable, help: 'Chrome executable help' },
-  ]} />;
+  const handleSave = async (data: Record<string, string>): Promise<void> => {
+    await apiClient.updateSettings(data);
+  };
+
+  const fields: FieldSpec[] = [
+    { label: 'Display Timezone', type: 'select', key: 'timezone', options: ['Auto: Asia/Taipei', 'UTC', 'Asia/Taipei'] },
+    { label: 'Server Timezone', type: 'select', key: 'serverTimezone', options: ['(UTC+08:00) Asia/Taipei'] },
+    { label: 'Search Engine Visibility', type: 'radio', key: 'searchEngineVisibility', options: ['Allow indexing', 'Discourage search engines from indexing site'] },
+    { label: 'Entry Page', type: 'radio', key: 'entryPage', options: ['Dashboard', 'Status Page - aa', 'Status Page - ff'] },
+    { label: 'Primary Base URL', key: 'primaryBaseUrl', help: 'Auto Get' },
+    { label: 'Steam API Key', type: 'password', key: 'steamApiKey', help: 'Steam API Key Help' },
+    { label: 'Globalping API Token', type: 'password', key: 'globalpingApiToken', help: 'Globalping API Token Help' },
+    { label: 'Enable NSCD', type: 'radio', key: 'nscdEnabled', options: ['Enable', 'Disable'] },
+    { label: 'Chrome/Chromium Executable', key: 'chromeExecutable', help: 'Chrome executable help' },
+  ];
+
+  return <SettingsSection
+    source="components/settings/General.vue"
+    title="General"
+    fields={fields}
+    actions={['Load', 'Save']}
+    onLoad={handleLoad}
+    onSave={handleSave}
+  />;
 }

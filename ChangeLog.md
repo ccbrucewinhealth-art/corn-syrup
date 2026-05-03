@@ -1,3 +1,107 @@
+## 2026-05-04 03:35:42 +0800
+
+- 分析 corn-syrup-backend 後端規格、現有 Rust 程式碼、REST API 檢查表與 SDD 範本。
+- 新增後端軟體設計規格書 [`20.doc/48.spec/backend/25.sdd-backend.md`](20.doc/48.spec/backend/25.sdd-backend.md)，內容涵蓋封面、文件資訊、概說、系統概述、系統設計、非功能需求、修訂記錄與附錄檢查清單。
+- SDD 內容記錄 Axum REST API、Settings API、SeaORM、file JSON persistence、監控、通知、狀態頁、資料流、錯誤碼、安全、日誌、效能與介面需求。
+- 新增處理紀錄 [`20.doc/15.resumes/Resume20260504-033542.md`](20.doc/15.resumes/Resume20260504-033542.md)。
+
+## 2026-05-04 03:05:00 +0800
+
+- 將左側側邊欄選單標題 MENU / SETTINGS 加入多國語言支援。
+- 更新 [`src/frontend/src/layouts/Layout.tsx`](src/frontend/src/layouts/Layout.tsx) 使用 `t(group)` 翻譯。
+- 更新 [`src/frontend/src/i18n/locales/zh-TW.json`](src/frontend/src/i18n/locales/zh-TW.json) 新增 MENU=選單, SETTINGS=設定。
+- 更新 [`src/frontend/src/i18n/locales/en.json`](src/frontend/src/i18n/locales/en.json) 新增 MENU=Menu, SETTINGS=Settings。
+- 更新 [`src/frontend/src/i18n/locales/ja.json`](src/frontend/src/i18n/locales/ja.json) 新增 MENU=メニュー, SETTINGS=設定。
+
+## 2026-05-04 03:01:27 +0800
+
+- 實作 kero-menu-button 點擊時縮放左側側邊欄選單的功能。
+- 更新 [`src/frontend/src/layouts/Layout.tsx`](src/frontend/src/layouts/Layout.tsx) 新增 `sidebarCollapsed` 狀態與 toggle 邏輯。
+- 更新 [`src/frontend/src/styles.css`](src/frontend/src/styles.css) 新增 collapsed 樣式與動畫過渡。
+- 新增處理紀錄 [`20.doc/15.resumes/Resume20260504-030127.md`](20.doc/15.resumes/Resume20260504-030127.md)。
+
+## 2026-05-04 02:57:20 +0800
+
+- 修正 corn-syrup-frontend 中 `/settings/*` 頁面的載入 (Load) 與儲存 (Save) 按鈕，使其正確連結到後端 API。
+- 更新 [`src/frontend/src/components/settings/SettingsSection.tsx`](src/frontend/src/components/settings/SettingsSection.tsx) 新增 `onLoad` 和 `onSave` 回調 prop。
+- 更新所有 settings 組件 (General, Appearance, Notifications, ReverseProxy, Tags, MonitorHistory, Docker, RemoteBrowsers, Proxies) 以使用 Load/Save API。
+- 新增 i18n 翻譯: Loading..., Saving..., Settings saved successfully, Failed to load settings, Failed to save settings。
+- 新增處理紀錄 [`20.doc/15.resumes/Resume20260504-025720.md`](20.doc/15.resumes/Resume20260504-025720.md)。
+
+## 2026-05-04 03:31:14 +0800
+
+- 分析 [`TRC-216-SDD-V3-03.00.docx`](20.doc/15.resumes/TRC-216-SDD-V3-03.00.docx) 文件結構，包含封面、目錄、概說、系統概述、系統設計、非功能需求與修訂記錄。
+- 新增繁體中文 Markdown SDD 範本 [`20.doc/48.spec/backend/89.sdd-template.md`](20.doc/48.spec/backend/89.sdd-template.md)，供後續 AI 產出軟體設計規格書使用。
+- 範本包含 Markdown 表格、Mermaid 架構圖/流程圖/ER 圖/sequence 圖、API Request/Response JSON、資料庫設計、錯誤碼、日誌、安全、效能與介面需求章節。
+- 範本附加 AI 產出檢查清單與提示詞建議，要求資訊不足時以 `<待補>` 標示並遮罩敏感資料。
+- 新增處理紀錄 [`20.doc/15.resumes/Resume20260504-033114.md`](20.doc/15.resumes/Resume20260504-033114.md)。
+
+## 2026-05-04 03:25:22 +0800
+
+- 補強 [`src/backend/rest/settings_api.rs`](src/backend/rest/settings_api.rs) debug log，顯示 settings API 呼叫步驟與 JSON 內容。
+- [`api_settings()`](src/backend/rest/settings_api.rs:70) 新增 persistence/file config 與 loaded settings JSON log。
+- [`api_settings_update()`](src/backend/rest/settings_api.rs:93) 新增 request JSON、normalized incoming JSON、persist.start、persist.ok、persist.error、persist.skip log。
+- 新增 [`SettingsUpdateRequest::to_masked_log_json()`](src/backend/rest/settings_api.rs:19)、[`mask_json_for_log()`](src/backend/rest/settings_api.rs:402) 與 [`mask_settings_map_for_log()`](src/backend/rest/settings_api.rs:410)，統一 JSON log 遮罩。
+- secret 欄位依 schema `is_secret` 遮罩，避免 token/API key/password 類資料進入 debug log。
+- 已執行 [`make check`](src/backend/Makefile) 成功；僅保留既有 warnings。
+- 新增處理紀錄 [`20.doc/15.resumes/Resume20260504-032522.md`](20.doc/15.resumes/Resume20260504-032522.md)。
+
+## 2026-05-04 03:20:45 +0800
+
+- 新增 [`src/backend/model/setting.rs`](src/backend/model/setting.rs)，定義 settings 的 SeaORM Entity/Model/ActiveModel 與 [`SettingUpsert`](src/backend/model/setting.rs:29)。
+- 更新 [`src/backend/model/mod.rs`](src/backend/model/mod.rs)，公開 `setting` model 模組。
+- 更新 [`src/backend/rest/settings_api.rs`](src/backend/rest/settings_api.rs)，將 ORM load/save 從 raw SQL key/value 查詢與手寫 upsert 字串改為 SeaORM entity/query builder。
+- ORM save 現使用 [`setting::Entity::insert()`](src/backend/rest/settings_api.rs:264) 搭配 [`OnConflict`](src/backend/rest/settings_api.rs:3) upsert。
+- 移除手寫 SQL escaping；table bootstrap 暫保留 raw DDL，待後續 migration 化。
+- 已執行 [`make check`](src/backend/Makefile) 成功；僅保留既有 warnings。
+- 新增處理紀錄 [`20.doc/15.resumes/Resume20260504-032045.md`](20.doc/15.resumes/Resume20260504-032045.md)。
+
+## 2026-05-04 03:16:56 +0800
+
+- 繼續補強 [`/api/settings`](src/backend/rest/mod.rs:46)，於 [`settings_api.rs`](src/backend/rest/settings_api.rs) 新增可選 SeaORM persistence。
+- 新增 `CORN_SYRUP_SETTINGS_PERSISTENCE=orm|sea-orm` 開關；預設仍為 file JSON persistence。
+- 新增 `CORN_SYRUP_SETTINGS_DATABASE_URL` 支援 settings ORM 專用 database URL，未設定時依序使用 `DATABASE_URL` 與 `sqlite://./data/kuma.db?mode=rwc`。
+- ORM 模式會自動 bootstrap `settings` table，並以 SeaORM raw SQL 執行 load/upsert。
+- ORM 連線、查詢或儲存失敗時會 debug log 記錄並 fallback 至 file JSON，保留 [`./data/settings.json`](data/settings.json) 可落地儲存。
+- 已執行 [`make check`](src/backend/Makefile) 成功；僅保留既有 warnings。
+- 新增處理紀錄 [`20.doc/15.resumes/Resume20260504-031656.md`](20.doc/15.resumes/Resume20260504-031656.md)。
+
+## 2026-05-04 03:13:43 +0800
+
+- 繼續補強 [`/api/settings`](src/backend/rest/mod.rs:46)，新增可落地 file JSON persistence。
+- 新增 [`src/backend/rest/settings_api.rs`](src/backend/rest/settings_api.rs)，集中 settings schema、request parser、validator、response builder 與 file repository。
+- [`api_settings()`](src/backend/rest/settings_api.rs:66) 現會以 schema defaults 疊加保存於 `./data/settings.json` 的設定後回傳。
+- [`api_settings_update()`](src/backend/rest/settings_api.rs:88) 現會驗證 payload，成功時 atomic write 至 `./data/settings.json`，可由 `CORN_SYRUP_SETTINGS_FILE` 覆蓋檔案位置。
+- 更新 [`src/backend/rest/mod.rs`](src/backend/rest/mod.rs)，將 [`/api/settings`](src/backend/rest/mod.rs:46) route 串接至 [`settings_api`](src/backend/rest/settings_api.rs)，並移除大量 settings schema/validator 內嵌程式。
+- 已執行 [`make check`](src/backend/Makefile) 成功；僅保留既有 warnings。
+- 新增處理紀錄 [`20.doc/15.resumes/Resume20260504-031343.md`](20.doc/15.resumes/Resume20260504-031343.md)。
+
+## 2026-05-04 03:09:53 +0800
+
+- 檢查 [`/api/settings`](src/backend/rest/mod.rs:46) 對應 [`api_settings()`](src/backend/rest/mod.rs:348)，確認原本僅回傳單一 timezone placeholder，未完成 settings API 實作。
+- 更新 [`src/backend/rest/mod.rs`](src/backend/rest/mod.rs)，讓 [`/api/settings`](src/backend/rest/mod.rs:46) 支援 GET 與 PUT。
+- 新增 [`SettingsUpdateRequest`](src/backend/rest/mod.rs:193)、[`SETTINGS_SCHEMA`](src/backend/rest/mod.rs:220)、[`api_settings_update()`](src/backend/rest/mod.rs:368) 與 settings 欄位驗證/套用/拒絕清單回傳。
+- [`api_settings()`](src/backend/rest/mod.rs:348) 改為依 schema 回傳前端 settings 頁面需要的完整預設 settings 與 meta，而非 placeholder。
+- 更新 [`src/backend/Cargo.toml`](src/backend/Cargo.toml) 加入 [`serde`](src/backend/Cargo.toml:33) 與 [`serde_json`](src/backend/Cargo.toml:34)，支援 JSON request/response。
+- 已執行 [`make check`](src/backend/Makefile) 成功；僅保留既有 warnings。
+- 新增處理紀錄 [`20.doc/15.resumes/Resume20260504-030953.md`](20.doc/15.resumes/Resume20260504-030953.md)。
+
+## 2026-05-04 03:03:48 +0800
+
+- 更新後端規格 [`Spec.md`](20.doc/48.spec/backend/02.Spec/Spec.md)，新增 Settings API 專章（S3.5）。
+- 定義 `/api/settings` 相關路由與合約：[`GET /api/settings`](20.doc/48.spec/backend/02.Spec/Spec.md)、[`PUT /api/settings`](20.doc/48.spec/backend/02.Spec/Spec.md)、reset/schema 延伸端點。
+- 依前端 settings 頁籤整理 12 類場景，並對齊 [`apiClient.getSettings()`](src/frontend/src/lib/api.ts:80) / [`apiClient.updateSettings()`](src/frontend/src/lib/api.ts:85) 呼叫模式。
+- 補上後端 model/ORM/service 邊界與驗證/安全策略，包含 secret 欄位 masking 與白名單 key 驗證。
+- 新增實作順序與遷移規劃，作為後續將 [`api_settings()`](src/backend/rest/mod.rs:289) placeholder 改為實作之依據。
+
+## 2026-05-04 02:50:41 +0800
+
+- 更新 [`src/backend/rest/mod.rs`](src/backend/rest/mod.rs) API handlers debug log 流程，統一為開始呼叫、步驟記錄、結束呼叫。
+- 新增 [`log_api_start()`](src/backend/rest/mod.rs:181) 與 [`log_api_end()`](src/backend/rest/mod.rs:185) 共用記錄函式。
+- 針對 20 個 API method 補上 method 內 debug step，並保留 [`api_json()`](src/backend/rest/mod.rs:335) / [`api_svg_badge()`](src/backend/rest/mod.rs:341) 的回應步驟記錄。
+- 執行 [`make check`](src/backend/Makefile)（`src/backend`）成功，僅有既有 warnings，無新增編譯錯誤。
+- 新增處理紀錄 [`20.doc/15.resumes/Resume20260504-025041.md`](20.doc/15.resumes/Resume20260504-025041.md)。
+
 ## 2026-05-03 02:13:50 +0800
 
 - 增強後端 REST API debug log，所有 `/api` 呼叫會記錄 request start、headers、handler dispatch、response status、response headers 與 request end。

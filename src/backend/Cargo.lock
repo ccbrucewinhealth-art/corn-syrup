@@ -297,6 +297,8 @@ dependencies = [
  "indexmap",
  "log",
  "sea-orm",
+ "serde",
+ "serde_json",
  "tempfile",
  "time",
  "time-core",

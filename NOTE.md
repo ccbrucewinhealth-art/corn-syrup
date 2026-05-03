@@ -1,0 +1,11 @@
+後端修正 (src/backend/rest/mod.rs)：
+- 移除了重複定義的 app() 函數
+- 新增 API 路由：
+  - /api/monitors - 監控列表
+  - /api/monitor/:id - 監控詳情
+  - /api/monitor/:id/heartbeat - 心跳歷史
+  - /api/status-page - 狀態頁列表
+  - /api/settings - 設定
+  - /api/login - 登入
+  - /api/register - 註冊
+  - /api/logout - 登出

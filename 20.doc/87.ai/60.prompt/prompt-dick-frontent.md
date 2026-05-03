@@ -413,3 +413,20 @@ mhtml目錄: 20.doc/87.ai/62.ref/screenshot/mhtml
 將 系統 前端的 相關 API 串連到 後端 (src/backend) 中，並進行相關確認
 
 ## API linking
+/settings/* 開頭的前端網頁，在載入，與 儲存 按鈕，沒有連結到必要的 後端 API, 修正他
+
+## 測試案例
+分析系統，列出在 選單 功能，應有的測試案例，加上說明，與注意事項
+
+##
+分析系統，將需求完整的需求整理進  20.doc/48.spec/backend/01.Requirements/Requirements.md 中, 應含需求內容，描述，相關邏輯與條列式流程步驟，並加上 UI 的操作需求列表, 和加上確認 [ ] 可事後確認
+
+###
+參照系統程式行數統計
+檔案類型	檔案數	行數
+.vue	165	29,381
+.js	15	2,952
+.ts	2	814
+總計	182	33,147
+參照系統: /home/ccbruce/public/github/uptime-kuma/src
+總程式碼行數: 33,147 行

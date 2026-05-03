@@ -8,6 +8,15 @@
   "app": {
     "name": "corn-syrup-frontend"
   },
+  "MENU": "選單",
+  "SETTINGS": "設定",
+  "Loading...": "載入中...",
+  "Saving...": "儲存中...",
+  "Settings saved successfully": "設定儲存成功",
+  "Failed to load settings": "載入設定失敗",
+  "Failed to save settings": "儲存設定失敗",
+  "Load": "載入",
+  "Save": "儲存",
   "Dashboard": "儀表板",
   "Settings": "設定",
   "List": "清單",

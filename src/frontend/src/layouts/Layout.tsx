@@ -37,23 +37,31 @@ export default function Layout() {
   const { t, i18n } = useTranslation();
   const location = useLocation();
   const [profileOpen, setProfileOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   debugAction('Layout', 'render', { pathname: location.pathname, language: i18n.language });
 
   return (
-    <div className="kero-layout-shell" data-source="layouts/Layout.vue" data-kero-template="analytics">
-      <aside className="kero-sidebar" aria-label={t('Main Navigation')}>
+    <div className={`kero-layout-shell${sidebarCollapsed ? ' sidebar-collapsed' : ''}`} data-source="layouts/Layout.vue" data-kero-template="analytics">
+      <aside className={`kero-sidebar${sidebarCollapsed ? ' collapsed' : ''}`} aria-label={t('Main Navigation')}>
         <div className="kero-brand-row">
           <NavLink to="/dashboard" className="kero-brand" aria-label={t('Dashboard')}>
             <object className="desktop-logo" width="34" height="34" data={logoUrl} aria-label={t('app.name')} />
-            <span>Corn-Syrup</span>
+            {!sidebarCollapsed && <span>Corn-Syrup</span>}
           </NavLink>
-          <button type="button" className="kero-menu-button" aria-label={t('Main Navigation')}>☰</button>
+          <button
+            type="button"
+            className="kero-menu-button"
+            aria-label={t('Main Navigation')}
+            onClick={() => setSidebarCollapsed((collapsed) => !collapsed)}
+          >
+            {sidebarCollapsed ? '▶' : '☰'}
+          </button>
         </div>
         <nav className="kero-sidebar-nav">
           {['MENU', 'SETTINGS'].map((group) => (
             <div key={group} className="kero-nav-group">
-              <div className="kero-nav-heading">{group}</div>
+              <div className="kero-nav-heading">{t(group)}</div>
               {keroSidebarItems.filter((item) => item.group === group).map((item) => (
                 <NavLink key={item.to} to={item.to} className={({ isActive }) => `kero-nav-item${isActive ? ' active' : ''}`}>
                   <i className={`fa ${item.icon} kero-nav-icon`} aria-hidden="true" />
@@ -136,7 +144,7 @@ export default function Layout() {
           <div className="kero-metrics-row">
             <div className="kero-metric"><span className="kero-metric-icon yellow">▣</span><div><span>{t('Monitors')}</span><strong>1.7M</strong><small>↘ 54.1%</small></div></div>
             <div className="kero-metric"><span className="kero-metric-icon pink">♢</span><div><span>{t('Incidents')}</span><strong>9M</strong><small>↘ 14.1%</small></div></div>
-            <div className="kero-metric"><span className="kero-metric-icon green">▥</span><div><span>{t('Uptime')}</span><strong>$563</strong><small>↗ 7.35%</small></div></div>
+            <div className="kero-metric"><span className="kero-metric-icon green">▥</span><div><span>{t('Uptime')}</span><strong>99.9%</strong><small>↗ 7.35%</small></div></div>
           </div>
         </section>
 

@@ -8,6 +8,7 @@ pub mod maintenance;
 pub mod monitor;
 pub mod proxy;
 pub mod remote_browser;
+pub mod setting;
 pub mod status_page;
 pub mod tag;
 pub mod user;

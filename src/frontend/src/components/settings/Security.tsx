@@ -1,12 +1,19 @@
-import SettingsSection from './SettingsSection';
+import SettingsSection, { FieldSpec } from './SettingsSection';
 
 export default function Security() {
-  return <SettingsSection source="components/settings/Security.vue" title="Security" fields={[
+  const fields: FieldSpec[] = [
     { label: 'Change Password', type: 'paragraph' },
-    { label: 'Current Password', type: 'password' },
-    { label: 'New Password', type: 'password' },
-    { label: 'Confirm New Password', type: 'password' },
+    { label: 'Current Password', type: 'password', key: 'currentPassword' },
+    { label: 'New Password', type: 'password', key: 'newPassword' },
+    { label: 'Confirm New Password', type: 'password', key: 'confirmPassword' },
     { label: 'Update Password', type: 'button' },
     { label: 'Two Factor Authentication Settings', type: 'paragraph' },
-  ]} actions={[]} />;
+  ];
+
+  return <SettingsSection
+    source="components/settings/Security.vue"
+    title="Security"
+    fields={fields}
+    actions={[]}
+  />;
 }

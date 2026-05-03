@@ -99,6 +99,100 @@
 | R3.10 | 後端資料存取層選用 SeaORM 作為 Rust ORM framework，統一 SQLite/MySQL/MariaDB 連線設定與後續 entity/repository 實作入口 |
 | R3.11 | `.env` 支援 `DATABASE_TYPE`、`DATABASE_URL`、`DATABASE_HOST`、`DATABASE_PORT`、`DATABASE_NAME`、`DATABASE_USER`、`DATABASE_PASSWORD` 與 SeaORM pool 設定 |
 
+## S3.5 Settings API 規格（對齊前端 Settings 12 類場景）
+
+### R3.12 API 路由與方法
+
+| Route | Method | 用途 |
+|------|--------|------|
+| `/api/settings` | GET | 載入全部 settings（供所有 settings 頁籤初始化） |
+| `/api/settings` | PUT | 批次更新 settings key-value |
+| `/api/settings/reset` | POST | 重設指定 keys（可選） |
+| `/api/settings/schema` | GET | 回傳欄位 schema（可選，供前端動態表單） |
+
+### R3.13 前端對應 12 類 settings 分群（邏輯分群）
+
+1. General
+2. Appearance
+3. Notifications
+4. Reverse Proxy
+5. Tags
+6. Monitor History
+7. Docker Hosts
+8. Remote Browsers
+9. Security
+10. API Keys
+11. Proxies
+12. About（唯讀資訊，不寫入 settings）
+
+> 說明：目前前端 [`apiClient.getSettings()`](src/frontend/src/lib/api.ts:80) 與 [`apiClient.updateSettings()`](src/frontend/src/lib/api.ts:85) 皆走單一路由 `/api/settings`，後端需依 keys 進行分群驗證與持久化。
+
+### R3.14 Request / Response 合約
+
+- GET `/api/settings`
+  - Response
+    - `ok: boolean`
+    - `settings: Record<string, string | number | boolean | null>`
+    - `meta: { version: number, updatedAt: string }`
+
+- PUT `/api/settings`
+  - Request
+    - `section?: string`（可選，例：`general`、`appearance`）
+    - `settings: Record<string, unknown>`（只傳變更欄位）
+  - Response
+    - `ok: boolean`
+    - `appliedKeys: string[]`
+    - `rejected: Array<{ key: string, reason: string }>`
+    - `settings: Record<string, string | number | boolean | null>`（更新後快照）
+
+### R3.15 Settings Model / ORM 規劃
+
+- 新增 Entity：`settings`
+  - `id` (PK)
+  - `key` (unique)
+  - `value_json` (text/json)
+  - `value_type` (string: `string|number|boolean|null|json`)
+  - `group_name` (string)
+  - `is_secret` (bool)
+  - `updated_by` (nullable user id)
+  - `created_at`, `updated_at`
+
+- Rust model 建議：
+  - `SettingsKey`（enum，管理白名單 key）
+  - `SettingsValue`（enum：String/Number/Bool/Json/Null）
+  - `SettingsRecord`（domain struct）
+
+### R3.16 驗證與安全
+
+- 採白名單 key 驗證（未知 key 直接拒絕）
+- 型別驗證：
+  - `keepMonitorHistory`: number
+  - `dataRetentionEnabled`: boolean
+  - `tlsExpiryNotifyDays`: string（CSV）或 number[]（規格化後）
+  - `theme/language/timezone`: enum 範圍檢查
+- 敏感欄位遮罩與分流：
+  - `steamApiKey`, `globalpingApiToken`, `currentPassword`, `newPassword`
+- debug log 只記錄 key 與結果，不輸出 secret value
+
+### R3.17 Service 邊界（建議模組）
+
+- `src/backend/settings/schema.rs`
+  - 定義 key 白名單、型別與分群
+- `src/backend/settings/service.rs`
+  - `load_all()`, `update_partial()`, `reset_keys()`
+- `src/backend/settings/repository.rs`
+  - ORM CRUD、交易處理
+- `src/backend/rest/mod.rs`
+  - route handler 僅處理 request parse / response 組裝
+
+### R3.18 實作順序
+
+1. 建立 `settings` table migration + entity
+2. 實作 schema/validator（先覆蓋前端已出現 keys）
+3. 實作 repository + service
+4. 將 `/api/settings` GET/PUT 從 placeholder 換成 service 呼叫
+5. 補上錯誤碼與整合測試（invalid key/type/permission）
+
 ---
 
 # Phase 4: 進階功能 (Advanced Features)

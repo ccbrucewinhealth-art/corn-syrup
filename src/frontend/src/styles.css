@@ -1,8 +1,17 @@
 :root { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #4b5563; background: #f5f5f5; }
 body { margin: 0; background: #f5f5f5; color: #4b5563; }
 a { color: #53e17d; }
-.kero-layout-shell { min-height: 100vh; display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 24px; padding: 20px 12px; box-sizing: border-box; background: #f7f7f7; }
-.kero-sidebar { background: #fff; border-radius: 6px; box-shadow: 0 10px 28px rgba(15,23,42,.10); overflow: hidden; }
+.kero-layout-shell { min-height: 100vh; display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 24px; padding: 20px 12px; box-sizing: border-box; background: #f7f7f7; transition: grid-template-columns .3s ease; }
+.kero-layout-shell.sidebar-collapsed { grid-template-columns: 60px minmax(0, 1fr); }
+.kero-sidebar { background: #fff; border-radius: 6px; box-shadow: 0 10px 28px rgba(15,23,42,.10); overflow: hidden; transition: width .3s ease; }
+.kero-sidebar.collapsed { width: 60px; }
+.kero-sidebar.collapsed .kero-nav-item span, .kero-sidebar.collapsed .kero-nav-heading { display: none; }
+.kero-sidebar.collapsed .kero-nav-item { justify-content: center; padding: 0; }
+.kero-sidebar.collapsed .kero-brand span { display: none; }
+.kero-sidebar.collapsed .kero-brand { justify-content: center; }
+.kero-sidebar.collapsed .kero-brand-row { padding: 0 8px; justify-content: space-between; }
+.kero-sidebar.collapsed .kero-brand { margin: 0 auto; }
+.kero-sidebar.collapsed .kero-menu-button { flex-shrink: 0; }
 .kero-brand-row { height: 70px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; border-bottom: 1px solid #f0f0f0; }
 .kero-brand { display: inline-flex; align-items: center; gap: .6rem; color: #f26354; font-size: 1.3rem; font-weight: 700; text-decoration: none; }
 .kero-menu-button { border: 0; background: transparent; color: #e45d4f; font-size: 1.4rem; cursor: pointer; }

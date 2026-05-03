@@ -30,6 +30,8 @@ icu_properties = "=2.0.1"
 icu_properties_data = "=2.0.1"
 icu_provider = "=2.0.0"
 log = "0.4"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
 sea-orm = { version = "0.12", default-features = false, features = ["macros", "runtime-tokio-rustls", "sqlx-sqlite", "sqlx-mysql", "with-json"] }
 idna_adapter = "=1.2.1"
 indexmap = "=2.12.1"

@@ -9,6 +9,8 @@ use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 use std::time::Instant;
 use tower_http::cors::{AllowOrigin, CorsLayer};
 
+mod settings_api;
+
 pub fn app() -> Router {
     app_with_config(None)
 }
@@ -39,7 +41,7 @@ pub fn app_with_config(config: Option<&AppConfig>) -> Router {
         .route("/api/monitor/:id", get(api_monitor_get))
         .route("/api/monitor/:id/heartbeat", get(api_monitor_heartbeat))
         .route("/api/status-page", get(api_status_page_list))
-        .route("/api/settings", get(api_settings))
+        .route("/api/settings", get(settings_api::api_settings).put(settings_api::api_settings_update))
         .route("/api/login", post(api_login))
         .route("/api/register", post(api_register))
         .route("/api/logout", post(api_logout))
@@ -178,6 +180,14 @@ fn log_api_step(handler: &str, step: &str, detail: impl Into<String>) {
     crate::backend::logging::debug("rest.api.step", &format!("{handler}.{step}"), detail.into());
 }
 
+fn log_api_start(handler: &str) {
+    log_api_step(handler, "start", "begin call");
+}
+
+fn log_api_end(handler: &str) {
+    log_api_step(handler, "end", "finish call");
+}
+
 async fn index() -> Html<&'static str> { Html("<div id=\"root\"></div>") }
 async fn setup_database_info() -> Response { json("{\"runningSetup\":false,\"needSetup\":false}") }
 async fn setup_database() -> Response { json("{\"ok\":true}") }
@@ -188,32 +198,161 @@ async fn e2e_restore_sqlite_snapshot() -> Response { json("{\"ok\":true}") }
 async fn robots_txt() -> Response { text("User-agent: *\nDisallow: /\n") }
 async fn metrics() -> Response { text("# HELP corn_syrup_up Backend health\n# TYPE corn_syrup_up gauge\ncorn_syrup_up 1\n") }
 async fn change_password() -> Response { redirect("/") }
-async fn api_entry_page() -> Response { api_json("api_entry_page", "{\"type\":\"entryPage\",\"entryPage\":\"dashboard\"}") }
-async fn badge_status() -> Response { api_svg_badge("badge_status", "status", "unknown") }
-async fn badge_uptime() -> Response { api_svg_badge("badge_uptime", "uptime", "unknown") }
-async fn badge_ping() -> Response { api_svg_badge("badge_ping", "ping", "unknown") }
-async fn badge_avg_response() -> Response { api_svg_badge("badge_avg_response", "avg-response", "unknown") }
-async fn badge_cert_exp() -> Response { api_svg_badge("badge_cert_exp", "cert-exp", "unknown") }
-async fn badge_response() -> Response { api_svg_badge("badge_response", "response", "unknown") }
-async fn api_monitors_list() -> Response {
-    log_api_step("api_monitors_list", "load", "list monitors from repository placeholder");
-    api_json("api_monitors_list", "{\"ok\":true,\"monitors\":[]}")
+async fn api_entry_page() -> Response {
+    let handler = "api_entry_page";
+    log_api_start(handler);
+    log_api_step(handler, "build_payload", "entryPage=dashboard");
+    let response = api_json(handler, "{\"type\":\"entryPage\",\"entryPage\":\"dashboard\"}");
+    log_api_end(handler);
+    response
 }
-async fn api_monitor_get() -> Response { api_json("api_monitor_get", "{\"ok\":true,\"monitor\":null}") }
-async fn api_monitor_heartbeat() -> Response { api_json("api_monitor_heartbeat", "{\"ok\":true,\"heartbeatList\":[]}") }
-async fn api_status_page_list() -> Response { api_json("api_status_page_list", "{\"ok\":true,\"statusPageList\":[]}") }
-async fn api_settings() -> Response { api_json("api_settings", "{\"ok\":true,\"settings\":{\"timezone\":\"Asia/Taipei\"}}") }
-async fn api_login() -> Response { api_json("api_login", "{\"ok\":true,\"token\":null}") }
-async fn api_register() -> Response { api_json("api_register", "{\"ok\":true,\"msg\":\"register ok\"}") }
-async fn api_logout() -> Response { api_json("api_logout", "{\"ok\":true}") }
+async fn badge_status() -> Response {
+    let handler = "badge_status";
+    log_api_start(handler);
+    log_api_step(handler, "resolve_badge", "status=unknown");
+    let response = api_svg_badge(handler, "status", "unknown");
+    log_api_end(handler);
+    response
+}
+async fn badge_uptime() -> Response {
+    let handler = "badge_uptime";
+    log_api_start(handler);
+    log_api_step(handler, "resolve_badge", "uptime=unknown");
+    let response = api_svg_badge(handler, "uptime", "unknown");
+    log_api_end(handler);
+    response
+}
+async fn badge_ping() -> Response {
+    let handler = "badge_ping";
+    log_api_start(handler);
+    log_api_step(handler, "resolve_badge", "ping=unknown");
+    let response = api_svg_badge(handler, "ping", "unknown");
+    log_api_end(handler);
+    response
+}
+async fn badge_avg_response() -> Response {
+    let handler = "badge_avg_response";
+    log_api_start(handler);
+    log_api_step(handler, "resolve_badge", "avg-response=unknown");
+    let response = api_svg_badge(handler, "avg-response", "unknown");
+    log_api_end(handler);
+    response
+}
+async fn badge_cert_exp() -> Response {
+    let handler = "badge_cert_exp";
+    log_api_start(handler);
+    log_api_step(handler, "resolve_badge", "cert-exp=unknown");
+    let response = api_svg_badge(handler, "cert-exp", "unknown");
+    log_api_end(handler);
+    response
+}
+async fn badge_response() -> Response {
+    let handler = "badge_response";
+    log_api_start(handler);
+    log_api_step(handler, "resolve_badge", "response=unknown");
+    let response = api_svg_badge(handler, "response", "unknown");
+    log_api_end(handler);
+    response
+}
+async fn api_monitors_list() -> Response {
+    let handler = "api_monitors_list";
+    log_api_start(handler);
+    log_api_step(handler, "load", "list monitors from repository placeholder");
+    let response = api_json(handler, "{\"ok\":true,\"monitors\":[]}");
+    log_api_end(handler);
+    response
+}
+async fn api_monitor_get() -> Response {
+    let handler = "api_monitor_get";
+    log_api_start(handler);
+    log_api_step(handler, "load", "fetch monitor placeholder by id");
+    let response = api_json(handler, "{\"ok\":true,\"monitor\":null}");
+    log_api_end(handler);
+    response
+}
+async fn api_monitor_heartbeat() -> Response {
+    let handler = "api_monitor_heartbeat";
+    log_api_start(handler);
+    log_api_step(handler, "load", "fetch heartbeat placeholder by monitor id");
+    let response = api_json(handler, "{\"ok\":true,\"heartbeatList\":[]}");
+    log_api_end(handler);
+    response
+}
+async fn api_status_page_list() -> Response {
+    let handler = "api_status_page_list";
+    log_api_start(handler);
+    log_api_step(handler, "load", "fetch status page list placeholder");
+    let response = api_json(handler, "{\"ok\":true,\"statusPageList\":[]}");
+    log_api_end(handler);
+    response
+}
+async fn api_login() -> Response {
+    let handler = "api_login";
+    log_api_start(handler);
+    log_api_step(handler, "auth", "verify login placeholder");
+    let response = api_json(handler, "{\"ok\":true,\"token\":null}");
+    log_api_end(handler);
+    response
+}
+async fn api_register() -> Response {
+    let handler = "api_register";
+    log_api_start(handler);
+    log_api_step(handler, "auth", "create user placeholder");
+    let response = api_json(handler, "{\"ok\":true,\"msg\":\"register ok\"}");
+    log_api_end(handler);
+    response
+}
+async fn api_logout() -> Response {
+    let handler = "api_logout";
+    log_api_start(handler);
+    log_api_step(handler, "auth", "revoke token placeholder");
+    let response = api_json(handler, "{\"ok\":true}");
+    log_api_end(handler);
+    response
+}
 async fn status_default() -> Response { Html("<div id=\"root\"></div>").into_response() }
 async fn status_slug() -> Response { Html("<div id=\"root\"></div>").into_response() }
 async fn status_slug_rss() -> Response { text("<?xml version=\"1.0\" encoding=\"UTF-8\"?><rss version=\"2.0\"><channel></channel></rss>") }
-async fn api_status_page_slug() -> Response { api_json("api_status_page_slug", "{\"ok\":true,\"slug\":null}") }
-async fn api_status_page_heartbeat() -> Response { api_json("api_status_page_heartbeat", "{\"ok\":true,\"heartbeatList\":[]}") }
-async fn api_status_page_manifest() -> Response { api_json("api_status_page_manifest", "{\"name\":\"corn-syrup-backend\",\"short_name\":\"corn-syrup-backend\"}") }
-async fn api_status_page_incident_history() -> Response { api_json("api_status_page_incident_history", "{\"ok\":true,\"incidentList\":[]}") }
-async fn api_status_page_badge() -> Response { api_svg_badge("api_status_page_badge", "status", "unknown") }
+async fn api_status_page_slug() -> Response {
+    let handler = "api_status_page_slug";
+    log_api_start(handler);
+    log_api_step(handler, "load", "resolve status-page slug placeholder");
+    let response = api_json(handler, "{\"ok\":true,\"slug\":null}");
+    log_api_end(handler);
+    response
+}
+async fn api_status_page_heartbeat() -> Response {
+    let handler = "api_status_page_heartbeat";
+    log_api_start(handler);
+    log_api_step(handler, "load", "resolve heartbeat list placeholder by slug");
+    let response = api_json(handler, "{\"ok\":true,\"heartbeatList\":[]}");
+    log_api_end(handler);
+    response
+}
+async fn api_status_page_manifest() -> Response {
+    let handler = "api_status_page_manifest";
+    log_api_start(handler);
+    log_api_step(handler, "build_manifest", "name=corn-syrup-backend");
+    let response = api_json(handler, "{\"name\":\"corn-syrup-backend\",\"short_name\":\"corn-syrup-backend\"}");
+    log_api_end(handler);
+    response
+}
+async fn api_status_page_incident_history() -> Response {
+    let handler = "api_status_page_incident_history";
+    log_api_start(handler);
+    log_api_step(handler, "load", "resolve incident history placeholder by slug");
+    let response = api_json(handler, "{\"ok\":true,\"incidentList\":[]}");
+    log_api_end(handler);
+    response
+}
+async fn api_status_page_badge() -> Response {
+    let handler = "api_status_page_badge";
+    log_api_start(handler);
+    log_api_step(handler, "resolve_badge", "status=unknown");
+    let response = api_svg_badge(handler, "status", "unknown");
+    log_api_end(handler);
+    response
+}
 async fn migrate_status() -> Response { json("{\"ok\":true,\"status\":\"idle\"}") }
 
 fn api_json(handler: &str, body: &'static str) -> Response {

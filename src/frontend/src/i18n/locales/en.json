@@ -8,6 +8,15 @@
   "app": {
     "name": "corn-syrup-frontend"
   },
+  "MENU": "Menu",
+  "SETTINGS": "Settings",
+  "Loading...": "Loading...",
+  "Saving...": "Saving...",
+  "Settings saved successfully": "Settings saved successfully",
+  "Failed to load settings": "Failed to load settings",
+  "Failed to save settings": "Failed to save settings",
+  "Load": "Load",
+  "Save": "Save",
   "Dashboard": "Dashboard",
   "Settings": "Settings",
   "List": "List",
